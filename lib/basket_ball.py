@@ -1,3 +1,4 @@
+import pdb
 def game_dict():
     return {
         "home": {
@@ -182,3 +183,67 @@ def game_dict():
             ]
         }
     }
+    
+def all_players():
+    return game_dict()["home"]["players"] + game_dict()["away"]["players"]
+
+def all_players_for_specific_team(team_name):
+    return game_dict()["home"]["players"] if game_dict()["home"]["team_name"] == team_name else game_dict()["away"]["players"]
+    
+def search_players(home_away, player_name, value):
+    # return 
+    players = game_dict()[home_away]["players"]
+    for player in players:
+        if player["name"] == player_name:
+            return player[value]
+        
+
+def grab_team_from_key(key1, value):
+    return game_dict()["home"] if game_dict()["home"][key1] == value else game_dict()["away"]
+    
+
+
+def num_points_per_game(name):
+    # grab_team_from_key("team_name", "Cleveland Cavaliers")
+    if search_players("home", name, "points_per_game"):
+        return search_players("home", name, "points_per_game")
+    else:
+        return search_players("away", name, "points_per_game")
+
+
+def player_age(name):
+    if search_players("home", name, "age"):
+        return search_players("home", name, "age")
+    else:
+        return search_players("away", name, "age")
+
+
+def team_colors(team_name):
+    team_dict = grab_team_from_key("team_name", team_name)
+    return team_dict["colors"]
+
+
+def team_names():
+    return [game_dict()["home"]["team_name"], game_dict()["away"]["team_name"]]
+
+def player_numbers(team_name):
+    players = all_players_for_specific_team(team_name)
+    return [player["number"] for player in players]
+
+def player_stats(player_name):
+    return [player for player in all_players() if player["name"] == player_name][0]
+
+def average_rebounds_by_shoe_brand():
+    frequency_dict = {}
+    for player in all_players():
+        if player["shoe_brand"] in frequency_dict:
+            frequency_dict[player["shoe_brand"]].append(player["rebounds_per_game"])
+        else:
+            frequency_dict[player["shoe_brand"]] = [player["rebounds_per_game"]]
+    str = ""
+    for key,value in frequency_dict.items():
+        #  print(f"{key}: {round(sum(value)/len(value), 2)}")
+        print(f'{key}: ', "{0:.2f}".format(sum(value)/len(value)))
+        #  pdb.set_trace()
+
+    # pdb.set_trace()
